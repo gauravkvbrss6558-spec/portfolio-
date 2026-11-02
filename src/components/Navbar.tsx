@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Gem, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { profile } from '@/data/profile';
+import Logo from '@/components/Logo';
 
 const links = [
   { href: '#about', label: 'About' },
@@ -14,12 +15,29 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    links.forEach((link) => {
+      const el = document.querySelector(link.href);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -32,8 +50,8 @@ export default function Navbar() {
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
         <a href="#top" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-gold-500/50 bg-gradient-to-br from-crimson-500 to-crimson-900 transition-transform duration-500 group-hover:rotate-[15deg]">
-            <Gem className="h-5 w-5 text-gold-300" />
+          <span className="transition-transform duration-500 group-hover:rotate-[15deg]">
+            <Logo size={40} />
           </span>
           <span className="font-display text-xl font-semibold text-cream">
             Gaurav<span className="text-gold-400"> Kumar</span>
@@ -45,7 +63,11 @@ export default function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="relative text-sm font-medium text-cream/75 transition-colors hover:text-gold-300 after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-gold-400 after:transition-all after:duration-300 hover:after:w-full"
+                className={`relative text-sm font-medium transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-gold-400 after:transition-all after:duration-300 hover:after:w-full ${
+                  activeSection === link.href.slice(1)
+                    ? 'text-gold-300 after:w-full'
+                    : 'text-cream/75 hover:text-gold-300 after:w-0'
+                }`}
               >
                 {link.label}
               </a>

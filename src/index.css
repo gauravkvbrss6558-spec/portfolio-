@@ -15,6 +15,12 @@
     background: #d4af37;
     color: #050505;
   }
+
+  @media (pointer: fine) {
+    * {
+      cursor: none;
+    }
+  }
 }
 
 @layer utilities {
@@ -82,6 +88,39 @@
   }
 }
 
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  75%, 100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
 .animate-orbit {
   animation: orbit 32s linear infinite;
 }
@@ -107,6 +146,18 @@
   animation: marquee 40s linear infinite;
 }
 
+.animate-reveal-up {
+  animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-scroll-dot {
+  animation: scroll-dot 1.8s ease-in-out infinite;
+}
+
+.animate-ping-slow {
+  animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -117,7 +168,10 @@
   .animate-spin-slow,
   .animate-shimmer,
   .animate-pulse-glow,
-  .animate-marquee {
+  .animate-marquee,
+  .animate-reveal-up,
+  .animate-scroll-dot,
+  .animate-ping-slow {
     animation: none;
   }
 }
